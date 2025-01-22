@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -31,7 +32,14 @@ namespace OjiSoftPortal
             app.UseHttpsRedirection();
 
             app.UseRouting();
-            app.UseCors();
+            app.UseCors(
+                options =>
+                {
+                    options.AllowAnyOrigin()
+                           .AllowAnyHeader()
+                           .AllowAnyMethod();
+                }
+            );
 
             app.UseExceptionHandler("/error");
             app.UseRateLimiter();
@@ -61,11 +69,20 @@ namespace OjiSoftPortal
             services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.JwtSectionName));
             services.AddSingleton<IValidateOptions<JwtOptions>, JwtOptionsValidator>();
 
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+                    {
+                        options.LoginPath = "/user/login";
+                        options.LogoutPath = "/user/logout";
+                    });
+
             services.AddLogging(
                 options =>
                 {
                     options.ClearProviders();
                     options.AddConsole();
+                    // use trace level for logging during development
+                    options.SetMinimumLevel(LogLevel.Trace);
                 }
             );
 
@@ -84,6 +101,7 @@ namespace OjiSoftPortal
                     options.Password.RequiredLength = 12;
                     options.Lockout.MaxFailedAccessAttempts = 5;
                     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                    options.ClaimsIdentity.UserIdClaimType = OpenIddictConstants.Claims.Subject;
                 })
                 .AddEntityFrameworkStores<OjiSoftDataContext>()
                 .AddDefaultTokenProviders();
@@ -103,23 +121,27 @@ namespace OjiSoftPortal
                         options =>
                         {
                             options.SetTokenEndpointUris("connect/token")
+                                   .SetAuthorizationEndpointUris("connect/authorize")
                                    .SetLogoutEndpointUris("connect/logout")
                                    .SetUserinfoEndpointUris("connect/userinfo")
                                    .SetIntrospectionEndpointUris("connect/introspect");
 
+                            options.SetAccessTokenLifetime(TimeSpan.FromMinutes(jwtOptions.ExpiryInMinutes))
+                                   .SetRefreshTokenLifetime(TimeSpan.FromDays(30));
+
                             options.RegisterScopes(OpenIddictConstants.Scopes.OfflineAccess, OpenIddictConstants.Scopes.Profile, OpenIddictConstants.Scopes.Roles);
 
-                            options.AllowClientCredentialsFlow()
-                                   .AllowPasswordFlow()
-                                   .AllowRefreshTokenFlow();
+                            options.AllowRefreshTokenFlow()
+                                   .AllowAuthorizationCodeFlow()
+                                   .RequireProofKeyForCodeExchange();
 
                             options.AddDevelopmentEncryptionCertificate()
                                    .AddDevelopmentSigningCertificate();
 
                             options.UseAspNetCore()
-                                   .EnableTokenEndpointPassthrough();
-
-                            options.AddEncryptionKey(jwtOptions.GetSymmetricSecurityKey());
+                                   .EnableTokenEndpointPassthrough()
+                                   .EnableAuthorizationEndpointPassthrough()
+                                   .DisableTransportSecurityRequirement();
                         }
                     )
                     .AddValidation(
@@ -127,15 +149,14 @@ namespace OjiSoftPortal
                         {
                             options.SetIssuer(jwtOptions.Issuer);
 
-                            options.AddEncryptionKey(jwtOptions.GetSymmetricSecurityKey())
-                                   .UseLocalServer();
+                            options.UseLocalServer();
 
                             options.UseSystemNetHttp();
                             options.UseAspNetCore();
                         }
                     );
 
-            services.AddControllers();
+            services.AddControllersWithViews();
 
             services.AddAuthorization();
 

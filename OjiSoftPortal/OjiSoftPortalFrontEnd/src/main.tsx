@@ -6,6 +6,7 @@ import BasicLoginPage from './pages/BasicLoginPage.tsx'
 import './index.css'
 import AccountPage from './pages/AccountPage.tsx'
 import IShowTheWholeRequest from './pages/IShowTheWholeRequest.tsx'
+import HandleLoginRedirect from './pages/HandleLoginRedirect.tsx'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -15,6 +16,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <Route path="/login" Component={BasicLoginPage}/>
         <Route path="/profile" Component={AccountPage}/>
         <Route path="/query" Component={IShowTheWholeRequest}/>
+        <Route path="/handleloginredirect" Component={HandleLoginRedirect}/>
       </Routes>
     </Router>
   </React.StrictMode>,

@@ -76,9 +76,9 @@ namespace OjiSoftPortal.Services
         {
             public required string Name { get; set; }
             public required string Description { get; set; }
+            public required string PostLogoutRedirectUri { get; set; }
             public required string RedirectUri { get; set; }
             public required string ClientId { get; set; }
-            public required string ClientSecret { get; set; }
         }
 
         public async Task EnsurePreRegisteredApplications()
@@ -90,9 +90,10 @@ namespace OjiSoftPortal.Services
                 var descriptor = new OpenIddictApplicationDescriptor
                 {
                     ClientId = ojiApp.ClientId,
-                    ClientSecret = ojiApp.ClientSecret,
-                    ClientType = OpenIddictConstants.ClientTypes.Confidential,
+                    ConsentType = OpenIddictConstants.ConsentTypes.Explicit,
+                    ClientType = OpenIddictConstants.ClientTypes.Public,
                     DisplayName = ojiApp.Name,
+                    PostLogoutRedirectUris = { new Uri(ojiApp.PostLogoutRedirectUri) },
                     RedirectUris = { new Uri(ojiApp.RedirectUri) },
                     Permissions =
                     {
@@ -100,7 +101,6 @@ namespace OjiSoftPortal.Services
                         OpenIddictConstants.Permissions.Endpoints.Token,
                         OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode,
                         OpenIddictConstants.Permissions.GrantTypes.RefreshToken,
-                        OpenIddictConstants.Permissions.GrantTypes.Password,
                         OpenIddictConstants.Permissions.ResponseTypes.Code,
                         OpenIddictConstants.Permissions.Scopes.Email,
                         OpenIddictConstants.Permissions.Scopes.Profile,

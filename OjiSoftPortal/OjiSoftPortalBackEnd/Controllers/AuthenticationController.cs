@@ -60,4 +60,11 @@ public class AuthenticationController : Controller
 
         return RedirectToAction("/");
     }
+
+    [HttpGet("accessdenied")]
+    public IActionResult AccessDenied()
+    {
+        // just return some plain text
+        return Content("Access Denied");
+    }
 }

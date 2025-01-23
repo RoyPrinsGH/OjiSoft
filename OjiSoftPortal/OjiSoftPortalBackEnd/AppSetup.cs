@@ -74,6 +74,7 @@ namespace OjiSoftPortal
                     {
                         options.LoginPath = "/user/login";
                         options.LogoutPath = "/user/logout";
+                        options.AccessDeniedPath = "/user/accessdenied";
                     });
 
             services.AddLogging(

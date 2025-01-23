@@ -53,4 +53,32 @@ public class AuthorizationController : Controller
         // Signing in with the OpenIddict authentiction scheme trigger OpenIddict to issue a code (which can be exchanged for an access token)
         return SignIn(claimsPrincipal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
     }
+
+    [HttpPost("~/connect/token"), Produces("application/json")]
+    public async Task<IActionResult> Exchange()
+    {
+        Console.WriteLine("Exchange called");
+        
+        var request = HttpContext.GetOpenIddictServerRequest() ??
+            throw new InvalidOperationException("The OpenID Connect request cannot be retrieved.");
+
+        ClaimsPrincipal claimsPrincipal;
+
+        if (request.IsAuthorizationCodeGrantType())
+        {
+            // Retrieve the claims principal stored in the authorization code
+            claimsPrincipal = (await HttpContext.AuthenticateAsync(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme)).Principal;
+        }
+        else if (request.IsRefreshTokenGrantType())
+        {
+            // Retrieve the claims principal stored in the refresh token
+            claimsPrincipal = (await HttpContext.AuthenticateAsync(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme)).Principal;
+        }
+        else
+        {
+            throw new InvalidOperationException("The specified grant type is not supported.");
+        }
+
+        return SignIn(claimsPrincipal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+    }
 }

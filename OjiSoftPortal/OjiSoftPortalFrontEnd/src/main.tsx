@@ -9,7 +9,6 @@ import IShowTheWholeRequest from './pages/IShowTheWholeRequest.tsx'
 import HandleLoginRedirect from './pages/HandleLoginRedirect.tsx'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
     <Router>
       <Routes>
         <Route index path="/" Component={IndexPage}/>
@@ -19,5 +18,4 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <Route path="/handleloginredirect" Component={HandleLoginRedirect}/>
       </Routes>
     </Router>
-  </React.StrictMode>,
 )

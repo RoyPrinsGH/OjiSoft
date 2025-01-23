@@ -6,7 +6,7 @@ const oidcConfig = {
   redirect_uri: "http://localhost:5173/handleloginredirect", // Where to return after login
   post_logout_redirect_uri: "http://localhost:5173/",     // Where to return after logout
   response_type: "code",                // Use the authorization code flow
-  scope: "openid profile offline_access", // Requested scopes
+  scope: "profile offline_access", // Requested scopes
   // PKCE is automatically enabled for `response_type=code` in oidc-client-ts
   
   // Where to store session data; "sessionStorage" or "localStorage" can be used

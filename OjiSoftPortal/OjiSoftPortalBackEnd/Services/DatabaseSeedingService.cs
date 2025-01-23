@@ -106,6 +106,10 @@ namespace OjiSoftPortal.Services
                         OpenIddictConstants.Permissions.Scopes.Profile,
                         OpenIddictConstants.Permissions.Scopes.Roles,
                     },
+                    Requirements =
+                    {
+                        OpenIddictConstants.Requirements.Features.ProofKeyForCodeExchange
+                    }
                 };
 
                 if (await appManager.FindByClientIdAsync(ojiApp.ClientId) is object client)

@@ -5,7 +5,7 @@ const HandleLoginRedirect: React.FC = () => {
     useEffect(() => {
         async function handleRedirect() {
             try {
-                await userManager.signinRedirectCallback();
+                await userManager.signinCallback();
                 window.location.href = "/";
             } catch (error) {
                 console.error("Error during login redirect callback:", error);

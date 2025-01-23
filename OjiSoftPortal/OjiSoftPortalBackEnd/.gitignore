@@ -4,3 +4,6 @@ obj
 *.user
 appsettings.json
 appsettings.Development.json
+
+node_modules
+wwwroot/css/tailwind_minified.css

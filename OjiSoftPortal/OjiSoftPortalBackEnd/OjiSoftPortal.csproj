@@ -7,6 +7,10 @@
     <InvariantGlobalization>false</InvariantGlobalization>
   </PropertyGroup>
 
+  <Target Name="RunTailwindBuild" BeforeTargets="Build">
+    <Exec Command="tailwind -i wwwroot/css/tailwind_base.css -o wwwroot/css/tailwind_minified.css --minify" />
+  </Target>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.6" />

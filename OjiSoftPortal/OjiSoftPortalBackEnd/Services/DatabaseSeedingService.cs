@@ -11,7 +11,7 @@ namespace OjiSoftPortal.Services
 
         public async Task EnsureRolesInDatabase()
         {
-            foreach (var roleName in Roles.All)
+            foreach (var roleName in OjiRoles.All)
             {
                 if (await roleManager.RoleExistsAsync(roleName))
                 {
@@ -56,7 +56,8 @@ namespace OjiSoftPortal.Services
                 if (result.Succeeded)
                 {
                     logger.LogInformation("Power user \"{powerUserName}\" created successfully", powerUserName);
-                    await userManager.AddToRoleAsync(powerUser, "Admin");
+                    await userManager.AddToRoleAsync(powerUser, OjiRoles.Admin);
+                    await userManager.AddToRoleAsync(powerUser, OjiRoles.Member);
                 }
                 else
                 {
@@ -99,6 +100,7 @@ namespace OjiSoftPortal.Services
                     {
                         OpenIddictConstants.Permissions.Endpoints.Authorization,
                         OpenIddictConstants.Permissions.Endpoints.Token,
+                        OpenIddictConstants.Permissions.Endpoints.Logout,
                         OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode,
                         OpenIddictConstants.Permissions.GrantTypes.RefreshToken,
                         OpenIddictConstants.Permissions.ResponseTypes.Code,

@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+html {
+    @apply h-full;
+}
+body {
+    @apply h-full;
+}
+#root {
+    @apply h-full;
+}
+
+.line-color {
+    @apply text-green-500;
+    filter: drop-shadow(rgb(0, 255, 0) 0px 0px 5px) drop-shadow(rgb(50, 50, 50) 0px 0px 10px);
+}
+
+.text {
+    @apply text-white bg-black whitespace-pre font-mono text-center
+}
+
+.button {
+    @apply border border-green-500 p-1 hover:bg-green-800 hover:scale-110 active:scale-75 active:bg-white active:text-black;
+    transition: all 0.1s;
+}
+
+.input {
+    @apply border-b border-green-500 p-1 outline-none
+}
+
+@keyframes bobbing {
+    0%, 100% {
+        transform: translateY(0);
+        animation-timing-function: ease-in-out;
+    }
+    50% {
+        transform: translateY(-1rem);
+        animation-timing-function: ease-in-out;
+    }
+}
+
+.ojisoft-logo {
+    filter: drop-shadow(rgb(0, 255, 0) 0px 0px 5px) drop-shadow(rgb(50, 50, 50) 0px 0px 10px);
+    animation: bobbing 7s infinite;
+}

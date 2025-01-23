@@ -6,4 +6,4 @@ appsettings.json
 appsettings.Development.json
 
 node_modules
-wwwroot/css/tailwind_minified.css
+wwwroot/css/*_min.css

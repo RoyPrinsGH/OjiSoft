@@ -1,9 +1,8 @@
 module.exports = {
     content: [
-        "./Views/**/*.cshtml",
+        "./**/*.cshtml",
+        "./**/*.css",
     ],
-    theme: {
-        extend: {},
-    },
+    theme: {},
     plugins: [],
 };

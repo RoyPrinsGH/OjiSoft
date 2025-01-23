@@ -11,14 +11,9 @@ using OpenIddict.Server.AspNetCore;
 namespace OjiSoftPortal.Controllers;
 
 [Route("user")]
-public class AuthenticationController : Controller
+public class AuthenticationController(SignInManager<OjiUser> signInManager) : Controller
 {
-    private readonly SignInManager<OjiUser> _signInManager;
-
-    public AuthenticationController(SignInManager<OjiUser> signInManager)
-    {
-        _signInManager = signInManager;
-    }
+    private readonly SignInManager<OjiUser> _signInManager = signInManager;
 
     [HttpGet("login")]
     public IActionResult Login(string returnUrl = null)
@@ -37,9 +32,21 @@ public class AuthenticationController : Controller
         
         if (ModelState.IsValid) 
         {
+            var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, false, lockoutOnFailure: false);
+
+            if (!result.Succeeded)
+            {
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                return View(model);
+            }
+
+            var user = await _signInManager.UserManager.FindByNameAsync(model.Username)
+                        ?? throw new InvalidOperationException("The user details cannot be retrieved.");
+
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, model.Username)
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(OpenIddictConstants.Claims.Subject, user.Id),
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -51,14 +58,6 @@ public class AuthenticationController : Controller
         }
 
         return View(model);
-    }
-
-    [HttpGet("logout")]
-    public async Task<IActionResult> Logout()
-    {
-        await HttpContext.SignOutAsync();
-
-        return RedirectToAction("/");
     }
 
     [HttpGet("accessdenied")]

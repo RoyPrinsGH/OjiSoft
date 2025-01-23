@@ -1,6 +1,6 @@
 ﻿namespace OjiSoftPortal.Data
 {
-    public static class Roles
+    public static class OjiRoles
     {
         public const string Admin = "Admin";
         public const string Member = "Member";

@@ -47,6 +47,8 @@ namespace OjiSoftPortal
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseStaticFiles();
+
             MapMinimalAPIEndPoints(app);
 
             app.MapControllers();
@@ -142,6 +144,7 @@ namespace OjiSoftPortal
                             options.UseAspNetCore()
                                    .EnableTokenEndpointPassthrough()
                                    .EnableAuthorizationEndpointPassthrough()
+                                   .EnableLogoutEndpointPassthrough()
                                    .DisableTransportSecurityRequirement();
                         }
                     )

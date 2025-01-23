@@ -2,14 +2,18 @@ using System.Security.Claims;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using OjiSoftPortal.Data.Models;
 using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
 
 namespace OjiSoftPortal.Controllers;
 
-public class AuthorizationController : Controller
+public class AuthorizationController(UserManager<OjiUser> userManager) : Controller
 {
+    private readonly UserManager<OjiUser> _userManager = userManager;
+
     [HttpGet("~/connect/authorize")]
     [HttpPost("~/connect/authorize")]
     [IgnoreAntiforgeryToken]
@@ -35,13 +39,26 @@ public class AuthorizationController : Controller
                 });
         }
 
+        // Get the database user
+        var user = await _userManager.GetUserAsync(result.Principal) ??
+            throw new InvalidOperationException("The user details cannot be retrieved.");
+
         // Create a new claims principal
         var claims = new List<Claim>
         {
-            // 'subject' claim which is required
-            new Claim(OpenIddictConstants.Claims.Subject, result.Principal.Identity.Name),
-            new Claim("some claim", "some value").SetDestinations(OpenIddictConstants.Destinations.AccessToken)
+            new Claim(OpenIddictConstants.Claims.Subject, user.Id.ToString())
+                .SetDestinations(OpenIddictConstants.Destinations.AccessToken, OpenIddictConstants.Destinations.IdentityToken),
+            new Claim(OpenIddictConstants.Claims.Name, user.UserName ?? user.Id.ToString())
+                .SetDestinations(OpenIddictConstants.Destinations.AccessToken, OpenIddictConstants.Destinations.IdentityToken),
         };
+
+        var roles = await _userManager.GetRolesAsync(user);
+
+        foreach (var role in roles)
+        {
+            claims.Add(new Claim(OpenIddictConstants.Claims.Role, role)
+                .SetDestinations(OpenIddictConstants.Destinations.AccessToken, OpenIddictConstants.Destinations.IdentityToken));
+        }
 
         var claimsIdentity = new ClaimsIdentity(claims, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
 
@@ -80,5 +97,13 @@ public class AuthorizationController : Controller
         }
 
         return SignIn(claimsPrincipal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+    }
+
+    [HttpGet("~/connect/logout")]
+    public async Task<IActionResult> Logout()
+    {
+        Console.WriteLine("Logout called");
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        return SignOut(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
     }
 }

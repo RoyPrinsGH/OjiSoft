@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import OjiSoftLogo from "../components/OjiSoftLogo";
 import { userManager } from "../utils/OidcConfig";
 
 const HandleLoginRedirect: React.FC = () => {
@@ -15,8 +16,12 @@ const HandleLoginRedirect: React.FC = () => {
     }, []);
 
     return (
-        <div>
-            <p>Redirecting...</p>
+        <div className="bg-black h-screen w-screen content-center">
+            <OjiSoftLogo />
+            <br />
+            <div className="flex flex-row justify-center gap-4 pt-4">
+                <p className="text button w-1/12 min-w-20">Redirecting...</p>
+            </div>
         </div>
     );
 };

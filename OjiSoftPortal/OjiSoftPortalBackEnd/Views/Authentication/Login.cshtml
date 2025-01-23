@@ -3,9 +3,39 @@
     ViewData["Title"] = "Login";
 }
 
-<form autocomplete="off" method="post">
-    <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
-    <input type="text" name="username" placeholder="Username" required />
-    <input type="password" name="password" placeholder="Password" required />
-    <button type="submit">Login</button>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link href="/css/ojisoftidp_min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="bg-black h-screen w-screen content-center">
+        <form method="post">
+            <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+            <pre class="text-green-500 drop-shadow-glow whitespace-pre font-bold leading-none text-center ojisoft-logo">
+ _____   _ _ _____     ___ _   
+|     | |_|_|   __|___|  _| |_ 
+|  |  | | | |__   | . |  _|  _|
+|_____|_| |_|_____|___|_| |_|  
+       |___|                     
+            </pre>
+            <br />
+            <div class="flex flex-row justify-center">
+                <input class="text input w-1/4 min-w-60" name="username" placeholder="username" />
+            </div>
+            <br />
+            <div class="flex flex-row justify-center">
+                <input class="text input w-1/4 min-w-60" name="password" type="password" placeholder="password" />
+            </div>
+            <br />
+            <div class="flex flex-row justify-center gap-4 pt-4">
+                <button type="submit" class="text button w-1/12 min-w-20">Log In</button>
+                <button class="text button w-1/12 min-w-20">Register</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <Target Name="RunTailwindBuild" BeforeTargets="Build">
-    <Exec Command="tailwind -i wwwroot/css/tailwind_base.css -o wwwroot/css/tailwind_minified.css --minify" />
+    <Exec Command="tailwind -i wwwroot/css/ojisoftidp.css -o wwwroot/css/ojisoftidp_min.css" />
   </Target>
 
   <ItemGroup>

@@ -1,16 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging.Console;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using OjiSoftPortal.Configuration;
 using OjiSoftPortal.Data;
 using OjiSoftPortal.Data.Models;
 using OjiSoftPortal.Services;
 using OpenIddict.Abstractions;
-using System.Net;
-using System.Threading.RateLimiting;
 
 namespace OjiSoftPortal
 {
@@ -65,8 +62,8 @@ namespace OjiSoftPortal
 
             RateLimiting.SetupRateLimiterServices(builder);
 
-            services.Configure<Configuration.RateLimiterOptions>(builder.Configuration.GetSection(Configuration.RateLimiterOptions.RateLimitersSectionName));
-            services.AddSingleton<IValidateOptions<Configuration.RateLimiterOptions>, RateLimiterOptionsValidator>();
+            services.Configure<RateLimiterOptions>(builder.Configuration.GetSection(RateLimiterOptions.RateLimitersSectionName));
+            services.AddSingleton<IValidateOptions<RateLimiterOptions>, RateLimiterOptionsValidator>();
 
             services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.JwtSectionName));
             services.AddSingleton<IValidateOptions<JwtOptions>, JwtOptionsValidator>();
@@ -86,6 +83,7 @@ namespace OjiSoftPortal
                     options.AddConsole();
                     // use trace level for logging during development
                     options.SetMinimumLevel(LogLevel.Trace);
+                    options.AddFilter<ConsoleLoggerProvider>("Microsoft", LogLevel.Warning);
                 }
             );
 

@@ -10,7 +10,7 @@ try
         DatabaseSeedingService dbSeedingService = scope.ServiceProvider.GetRequiredService<DatabaseSeedingService>();
 
         await dbSeedingService.EnsureRolesInDatabase();
-        await dbSeedingService.EnsurePowerUserExists();
+        await dbSeedingService.EnsureSystemUserExists();
         await dbSeedingService.EnsurePreRegisteredApplications();
     }
 

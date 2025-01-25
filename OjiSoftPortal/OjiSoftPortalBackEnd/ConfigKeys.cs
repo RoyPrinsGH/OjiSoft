@@ -2,8 +2,8 @@
 {
     public static class ConfigKeys
     {
-        public const string PowerUserName = "PowerUser:Name";
-        public const string PowerUserPassword = "PowerUser:Password";
+        public const string SystemAccountUserName = "SystemAccount:UserName";
+        public const string SystemAccountPassword = "SystemAccount:Password";
 
         public const string RateLimit = "RateLimit";
         public const string AnonymousResourceModificationRateLimiterName = "AnonymousResourceModification";

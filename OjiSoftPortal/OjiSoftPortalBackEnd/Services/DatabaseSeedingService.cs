@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Reflection;
+using Microsoft.AspNetCore.Identity;
 using OjiSoftPortal.Data;
 using OjiSoftPortal.Data.Models;
 using OpenIddict.Abstractions;
@@ -11,7 +12,13 @@ namespace OjiSoftPortal.Services
 
         public async Task EnsureRolesInDatabase()
         {
-            foreach (var roleName in OjiRoles.All)
+            // Get all roles using reflection
+
+            Type rolesType = typeof(OjiRoles);
+            FieldInfo[] roleFields = rolesType.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+            var roles = roleFields.Select(f => f.GetValue(null) as string).Where(r => r is not null).Select(r => r!);
+
+            foreach (var roleName in roles)
             {
                 if (await roleManager.RoleExistsAsync(roleName))
                 {
@@ -35,40 +42,50 @@ namespace OjiSoftPortal.Services
             }
         }
 
-        public class PowerUserCreationException(string message) : Exception(message);
+        public class SystemUserCreationException(string message) : Exception(message);
 
-        public async Task EnsurePowerUserExists()
+        public async Task EnsureSystemUserExists()
         {
-            string powerUserName = config[ConfigKeys.PowerUserName] ?? throw new PowerUserCreationException("Power user name not found in configuration");
-
-            if (await userManager.FindByNameAsync(powerUserName) is null)
+            // Remove all system accounts before creating a new one
+            var systemAccs = await userManager.GetUsersInRoleAsync(OjiRoles.System);
+            foreach (OjiUser systemAcc in systemAccs)
             {
-                string powerUserPassword = config[ConfigKeys.PowerUserPassword] ?? throw new PowerUserCreationException("Power user password not found in configuration");
+                await userManager.DeleteAsync(systemAcc);
 
-                OjiUser powerUser = new()
-                {
-                    UserName = powerUserName,
-                    Level = 999,
-                };
-
-                IdentityResult result = await userManager.CreateAsync(powerUser, powerUserPassword);
-
-                if (result.Succeeded)
-                {
-                    logger.LogInformation("Power user \"{powerUserName}\" created successfully", powerUserName);
-                    await userManager.AddToRoleAsync(powerUser, OjiRoles.Admin);
-                    await userManager.AddToRoleAsync(powerUser, OjiRoles.Member);
-                }
-                else
-                {
-                    string errors = string.Join(", ", result.Errors.Select(e => e.Description));
-
-                    logger.LogError("Failed to create power user \"{powerUserName}\": {errors}", powerUserName, errors);
-                    throw new PowerUserCreationException($"Failed to create power user \"{powerUserName}\": {errors}");
-                }
+                logger.LogWarning("Existing system account \"{systemAcc.UserName}\" deleted", systemAcc.UserName);
             }
 
-            logger.LogInformation("Power user \"{powerUserName}\" already exists", powerUserName);
+            string systemUserName = config[ConfigKeys.SystemAccountUserName] ?? throw new SystemUserCreationException("Power user name not found in configuration");
+            string systemUserPassword = config[ConfigKeys.SystemAccountPassword] ?? throw new SystemUserCreationException("Power user password not found in configuration");
+    
+            // We cannot create a system user if a non-system user with the same name already exists
+            if (await userManager.FindByNameAsync(systemUserName) is OjiUser existingUserWithSystemUsername)
+            {
+                throw new SystemUserCreationException($"A non-system user with the name \"{systemUserName}\" already exists");
+            }
+
+            OjiUser systemUser = new()
+            {
+                UserName = systemUserName,
+                Level = 999,
+            };
+
+            IdentityResult result = await userManager.CreateAsync(systemUser, systemUserPassword);
+
+            if (result.Succeeded)
+            {
+                logger.LogInformation("System user \"{systemUserName}\" created successfully", systemUserName);
+                await userManager.AddToRoleAsync(systemUser, OjiRoles.System);
+                await userManager.AddToRoleAsync(systemUser, OjiRoles.Admin);
+                await userManager.AddToRoleAsync(systemUser, OjiRoles.Member);
+            }
+            else
+            {
+                string errors = string.Join(", ", result.Errors.Select(e => e.Description));
+
+                logger.LogError("Failed to create system user \"{systemUserName}\": {errors}", systemUserName, errors);
+                throw new SystemUserCreationException($"Failed to create system user \"{systemUserName}\": {errors}");
+            }
         }
 
         class OjiAppCreationException(string message) : Exception(message);

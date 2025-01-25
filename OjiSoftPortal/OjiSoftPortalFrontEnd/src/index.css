@@ -17,7 +17,7 @@ body {
 }
 
 .text {
-    @apply text-white bg-black whitespace-pre font-mono text-center
+    @apply text-white whitespace-pre font-mono text-center
 }
 
 .button {

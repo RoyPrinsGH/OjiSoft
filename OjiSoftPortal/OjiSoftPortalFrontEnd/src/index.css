@@ -22,6 +22,8 @@ body {
 
 .button {
     @apply border border-green-500 p-1 hover:bg-green-800 hover:scale-110 active:scale-75 active:bg-white active:text-black;
+    overflow-x: clip;
+    text-overflow: ellipsis;
     transition: all 0.1s;
 }
 

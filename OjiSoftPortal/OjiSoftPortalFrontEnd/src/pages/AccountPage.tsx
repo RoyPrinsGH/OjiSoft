@@ -17,7 +17,7 @@ const AccountPage: React.FC = () => {
             <br />
             <br />
             <div className="flex flex-row justify-center gap-4">
-                <div className="flex flex-col w-1/12 gap-4">
+                <div className="flex flex-col w-1/12 gap-4 min-w-40 max-w-60">
                     <div className="flex flex-row justify-center">
                         <div className="flex flex-col justify-center border border-green-500 p-2.5 w-full">
                             <div className="flex flex-row justify-center border-b border-gray-500 mb-2">
@@ -47,7 +47,7 @@ const AccountPage: React.FC = () => {
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-col w-1/12 gap-4">
+                <div className="flex flex-col w-1/12 gap-4 min-w-40 max-w-60">
                     <div className="flex flex-row justify-center">
                         <div className="flex flex-col border border-green-500 p-2.5 w-full gap-2">
                             <div className="flex flex-row justify-center border-b border-gray-500 mb-2">

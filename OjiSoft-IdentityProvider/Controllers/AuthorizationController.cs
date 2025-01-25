@@ -84,12 +84,12 @@ public class AuthorizationController(UserManager<OjiUser> userManager) : Control
         if (request.IsAuthorizationCodeGrantType())
         {
             // Retrieve the claims principal stored in the authorization code
-            claimsPrincipal = (await HttpContext.AuthenticateAsync(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme)).Principal;
+            claimsPrincipal = (await HttpContext.AuthenticateAsync(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme)).Principal!;
         }
         else if (request.IsRefreshTokenGrantType())
         {
             // Retrieve the claims principal stored in the refresh token
-            claimsPrincipal = (await HttpContext.AuthenticateAsync(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme)).Principal;
+            claimsPrincipal = (await HttpContext.AuthenticateAsync(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme)).Principal!;
         }
         else
         {

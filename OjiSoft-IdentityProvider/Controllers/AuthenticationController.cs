@@ -16,7 +16,7 @@ public class AuthenticationController(SignInManager<OjiUser> signInManager) : Co
     private readonly SignInManager<OjiUser> _signInManager = signInManager;
 
     [HttpGet("login")]
-    public IActionResult Login(string returnUrl = null)
+    public IActionResult Login(string? returnUrl = null)
     {
         Console.WriteLine("Login called with query string: " + Request.QueryString.Value);
         ViewData["ReturnUrl"] = returnUrl;
@@ -45,8 +45,8 @@ public class AuthenticationController(SignInManager<OjiUser> signInManager) : Co
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(OpenIddictConstants.Claims.Subject, user.Id),
+                new(ClaimTypes.Name, user.UserName ?? "Unknown"),
+                new(OpenIddictConstants.Claims.Subject, user.Id),
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

@@ -5,5 +5,4 @@ obj
 appsettings.json
 appsettings.Development.json
 
-node_modules
 wwwroot/css/*_min.css

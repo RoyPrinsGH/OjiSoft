@@ -32,7 +32,7 @@ public static class Program
         }
 
         var mainOptions = new SelectionPrompt<string>()
-            .AddChoices(["Build for Production", "Test", "Deploy", "Exit"]);
+            .AddChoices(["Build for production", "Test", "Deploy", "Exit"]);
 
         bool shouldExit = false;
 

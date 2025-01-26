@@ -33,7 +33,7 @@ public sealed class OjiSoftIdentityServer : IProject
 
         Directory.SetCurrentDirectory($"Source/{ProjectFolderName}");
 
-        AnsiConsole.MarkupLine($"[purple]{ProjectName}[/] - [yellow]Running dotnet publish...[/]");
+        AnsiConsole.MarkupLine($"{ProjectName} - [yellow]Running dotnet publish...[/]");
         ctx?.Status("Running dotnet publish...");
 
         var process = System.Diagnostics.Process.Start("CMD.exe", "/C start /WAIT cmd /C \"dotnet publish -c Release -r win-x64 -p:PublishSingleFile=true -o ../../Build/" + ProjectFolderName + " && exit\"");

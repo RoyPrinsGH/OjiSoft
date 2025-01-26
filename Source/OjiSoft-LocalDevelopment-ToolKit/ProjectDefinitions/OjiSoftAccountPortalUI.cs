@@ -33,7 +33,7 @@ public sealed class OjiSoftAccountPortalUI : IProject
 
         Directory.SetCurrentDirectory($"Source/{ProjectFolderName}");
 
-        AnsiConsole.MarkupLine($"[purple]{ProjectName}[/] - [yellow]Running npm install...[/]");
+        AnsiConsole.MarkupLine($"{ProjectName} - [yellow]Running npm install...[/]");
         ctx?.Status("Running npm install...");
 
         var process = System.Diagnostics.Process.Start("CMD.exe", "/C start /WAIT cmd /C \"npm install && exit\"");
@@ -45,7 +45,7 @@ public sealed class OjiSoftAccountPortalUI : IProject
         }
 
         // Run npm run build
-        AnsiConsole.MarkupLine($"[purple]{ProjectName}[/] - [yellow]Running npm run build...[/]");
+        AnsiConsole.MarkupLine($"{ProjectName} - [yellow]Running npm run build...[/]");
         ctx?.Status("Running npm run build...");
 
         process = System.Diagnostics.Process.Start("CMD.exe", "/C start /WAIT cmd /C \"npm run build && exit\"");
@@ -60,7 +60,7 @@ public sealed class OjiSoftAccountPortalUI : IProject
         Directory.SetCurrentDirectory("../../");
 
         // Xcopy the build output to the appropriate directory
-        AnsiConsole.MarkupLine($"[purple]{ProjectName}[/] - [yellow]Copying build output...[/]");
+        AnsiConsole.MarkupLine($"{ProjectName} - [yellow]Copying build output...[/]");
         ctx?.Status("Copying build output...");
 
         process = System.Diagnostics.Process.Start("CMD.exe", "/C start /WAIT cmd /C \"xcopy /E /Y /I \"./Source/" + ProjectFolderName + "/dist\" \"./Build/" + ProjectFolderName + "\"\"");

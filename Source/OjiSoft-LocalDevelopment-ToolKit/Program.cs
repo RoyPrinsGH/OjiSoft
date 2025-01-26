@@ -32,7 +32,7 @@ public static class Program
         }
 
         var mainOptions = new SelectionPrompt<string>()
-            .AddChoices(["Run in development mode", "Build for production", "Test", "Exit"]);
+            .AddChoices(["Build for Production", "Test", "Deploy", "Exit"]);
 
         bool shouldExit = false;
 
@@ -46,11 +46,11 @@ public static class Program
                 case "Build for production":
                     BuildForProduction();
                     break;
-                case "Run in development mode":
-                    // Placeholder for development mode logic.
-                    break;
                 case "Test":
                     // Placeholder for test logic.
+                    break;
+                case "Deploy":
+                    // Placeholder for deploy logic.
                     break;
                 case "Exit":
                     AnsiConsole.MarkupLine("[yellow]Exiting...[/]");
@@ -65,7 +65,7 @@ public static class Program
 
     private static bool BuildForProduction()
     {
-        // Get project names via Reflection
+        // Get projects via Reflection
         var projectTypes = Assembly.GetExecutingAssembly().GetTypes()
             .Where(t => t.GetInterfaces().Contains(typeof(IProjectBuilder)))
             .ToList();
@@ -73,9 +73,10 @@ public static class Program
         var projects = projectTypes.Select(t => (IProjectBuilder)Activator.CreateInstance(t)!).ToList();
 
         // Select project to build.
-        var projectsToBuild = new MultiSelectionPrompt<string>()
+        var projectsToBuild = new MultiSelectionPrompt<IProjectBuilder>()
             .Title("Select project(s) to build")
-            .AddChoices(projects.Select(p => p.ProjectName));
+            .AddChoices(projects)
+            .UseConverter(p => p.ProjectName);
 
         var selectedProjects = AnsiConsole.Prompt(projectsToBuild);
 
@@ -88,7 +89,7 @@ public static class Program
                 ctx.SpinnerStyle(Style.Parse("green"));
                 foreach (var project in selectedProjects)
                 {
-                    buildSuccess = projects.First(p => p.ProjectName == project).Build(ctx);
+                    buildSuccess = project.Build(ctx);
                     if (!buildSuccess)
                     {
                         AnsiConsole.MarkupLine($"[red]Error:[/] Build failed for {project}.");

@@ -5,9 +5,9 @@ namespace OjiSoft.LocalDevelopmentToolKit.ProjectDefinitions;
 /// <summary>
 /// This class holds the build logic for the Account Portal UI project.
 /// </summary>
-public sealed class AccountPortalUI : IProjectDefinition
+public sealed class OjiSoftAccountPortalUIBuilder : IProjectBuilder
 {
-    public string ProjectName { get; } = "Account Portal UI";
+    public string ProjectName { get; } = "OjiSoft Account Portal UI";
 
     public bool Build(StatusContext? ctx = null)
     {
@@ -29,7 +29,7 @@ public sealed class AccountPortalUI : IProjectDefinition
         Directory.SetCurrentDirectory("Source/OjiSoft-AccountPortal-UI");
 
         // Run npm install'
-        AnsiConsole.MarkupLine($"[blue]{ProjectName}[/] - [yellow]Running npm install...[/]");
+        AnsiConsole.MarkupLine($"[purple]{ProjectName}[/] - [yellow]Running npm install...[/]");
         ctx?.Status("Running npm install...");
 
         var process = System.Diagnostics.Process.Start("CMD.exe", "/C start /WAIT cmd /C \"npm install && exit\"");
@@ -41,7 +41,7 @@ public sealed class AccountPortalUI : IProjectDefinition
         }
 
         // Run npm run build
-        AnsiConsole.MarkupLine($"[blue]{ProjectName}[/] - [yellow]Running npm run build...[/]");
+        AnsiConsole.MarkupLine($"[purple]{ProjectName}[/] - [yellow]Running npm run build...[/]");
         ctx?.Status("Running npm run build...");
 
         process = System.Diagnostics.Process.Start("CMD.exe", "/C start /WAIT cmd /C \"npm run build && exit\"");
@@ -56,7 +56,7 @@ public sealed class AccountPortalUI : IProjectDefinition
         Directory.SetCurrentDirectory("../../");
 
         // Xcopy the build output to the appropriate directory
-        AnsiConsole.MarkupLine($"[blue]{ProjectName}[/] - [yellow]Copying build output...[/]");
+        AnsiConsole.MarkupLine($"[purple]{ProjectName}[/] - [yellow]Copying build output...[/]");
         ctx?.Status("Copying build output...");
 
         process = System.Diagnostics.Process.Start("CMD.exe", "/C start /WAIT cmd /C \"xcopy /E /Y /I \"./Source/OjiSoft-AccountPortal-UI/dist\" \"./Build/AccountPortalUI\"\"");

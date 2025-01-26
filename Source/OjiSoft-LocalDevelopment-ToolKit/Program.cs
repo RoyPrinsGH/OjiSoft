@@ -67,10 +67,10 @@ public static class Program
     {
         // Get project names via Reflection
         var projectTypes = Assembly.GetExecutingAssembly().GetTypes()
-            .Where(t => t.GetInterfaces().Contains(typeof(IProjectDefinition)))
+            .Where(t => t.GetInterfaces().Contains(typeof(IProjectBuilder)))
             .ToList();
 
-        var projects = projectTypes.Select(t => (IProjectDefinition)Activator.CreateInstance(t)!).ToList();
+        var projects = projectTypes.Select(t => (IProjectBuilder)Activator.CreateInstance(t)!).ToList();
 
         // Select project to build.
         var projectsToBuild = new MultiSelectionPrompt<string>()

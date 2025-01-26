@@ -2,7 +2,7 @@ using Spectre.Console;
 
 namespace OjiSoft.LocalDevelopmentToolKit.ProjectDefinitions;
 
-public interface IProjectDefinition
+public interface IProjectBuilder
 {
     public string ProjectName { get; }
 

@@ -5,30 +5,34 @@ namespace OjiSoft.LocalDevelopmentToolKit.ProjectDefinitions;
 /// <summary>
 /// This class holds the build logic for the Account Portal UI project.
 /// </summary>
-public sealed class OjiSoftAccountPortalUIBuilder : IProjectBuilder
+public sealed class OjiSoftAccountPortalUI : IProject
 {
     public string ProjectName { get; } = "OjiSoft Account Portal UI";
 
+    public string ProjectFolderName { get; } = "OjiSoft-AccountPortal-UI";
+
     public bool Build(StatusContext? ctx = null)
     {
-        // Check if Source directory exists
         if (!Directory.Exists("Source"))
         {
             AnsiConsole.MarkupLine("[red]Error:[/] ./Source/ directory not found.");
             return false;
         }
 
-        // Check if Source\OjiSoft-AccountPortal-UI directory exists
-        if (!Directory.Exists("Source/OjiSoft-AccountPortal-UI"))
+        if (!Directory.Exists($"Source/{ProjectFolderName}"))
         {
-            AnsiConsole.MarkupLine("[red]Error:[/] ./Source/OjiSoft-AccountPortal-UI/ directory not found.");
+            AnsiConsole.MarkupLine($"[red]Error:[/] ./Source/{ProjectFolderName}/ directory not found.");
             return false;
         }
 
-        // CD into Source\OjiSoft-AccountPortal-UI
-        Directory.SetCurrentDirectory("Source/OjiSoft-AccountPortal-UI");
+        // Clear the build subdirectory if it exists
+        if (Directory.Exists($"Build/{ProjectFolderName}"))
+        {
+            Directory.Delete($"Build/{ProjectFolderName}", true);
+        }
 
-        // Run npm install'
+        Directory.SetCurrentDirectory($"Source/{ProjectFolderName}");
+
         AnsiConsole.MarkupLine($"[purple]{ProjectName}[/] - [yellow]Running npm install...[/]");
         ctx?.Status("Running npm install...");
 
@@ -59,7 +63,7 @@ public sealed class OjiSoftAccountPortalUIBuilder : IProjectBuilder
         AnsiConsole.MarkupLine($"[purple]{ProjectName}[/] - [yellow]Copying build output...[/]");
         ctx?.Status("Copying build output...");
 
-        process = System.Diagnostics.Process.Start("CMD.exe", "/C start /WAIT cmd /C \"xcopy /E /Y /I \"./Source/OjiSoft-AccountPortal-UI/dist\" \"./Build/AccountPortalUI\"\"");
+        process = System.Diagnostics.Process.Start("CMD.exe", "/C start /WAIT cmd /C \"xcopy /E /Y /I \"./Source/" + ProjectFolderName + "/dist\" \"./Build/" + ProjectFolderName + "\"\"");
         process.WaitForExit();
         if (process.ExitCode != 0)
         {

@@ -32,7 +32,8 @@ public static class Program
         }
 
         var mainOptions = new SelectionPrompt<string>()
-            .AddChoices(["Build for production", "Test", "Deploy", "Exit"]);
+            .Title("[purple]OjiSoft Local Development Toolkit[/]")
+            .AddChoices(["Test", "Build", "Deploy", "Exit"]);
 
         bool shouldExit = false;
 
@@ -43,11 +44,11 @@ public static class Program
             // Based on the user's selection, we will call the appropriate method.
             switch (action)
             {
-                case "Build for production":
-                    BuildForProduction();
-                    break;
                 case "Test":
                     // Placeholder for test logic.
+                    break;
+                case "Build":
+                    BuildForProduction();
                     break;
                 case "Deploy":
                     // Placeholder for deploy logic.
@@ -67,13 +68,13 @@ public static class Program
     {
         // Get projects via Reflection
         var projectTypes = Assembly.GetExecutingAssembly().GetTypes()
-            .Where(t => t.GetInterfaces().Contains(typeof(IProjectBuilder)))
+            .Where(t => t.GetInterfaces().Contains(typeof(IProject)))
             .ToList();
 
-        var projects = projectTypes.Select(t => (IProjectBuilder)Activator.CreateInstance(t)!).ToList();
+        var projects = projectTypes.Select(t => (IProject)Activator.CreateInstance(t)!).ToList();
 
         // Select project to build.
-        var projectsToBuild = new MultiSelectionPrompt<IProjectBuilder>()
+        var projectsToBuild = new MultiSelectionPrompt<IProject>()
             .Title("Select project(s) to build")
             .AddChoices(projects)
             .UseConverter(p => p.ProjectName);

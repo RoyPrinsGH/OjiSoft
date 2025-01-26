@@ -1,0 +1,1 @@
+dotnet run --project ./Source/OjiSoft-LocalDevelopment-ToolKit/OjiSoft-LocalDevelopment-ToolKit.csproj

@@ -1,1 +1,0 @@
-dotnet run --project ./OjiSoft-IdentityProvider/OjiSoft-IdentityProvider.csproj

@@ -46,6 +46,11 @@ jobs:
         working-directory: ./Source/OjiSoft-IdentityProvider
         run: dotnet publish --configuration Release --no-build --output ./publish
 
+      - name: Empty deploy directory
+        run: |
+          rm -rf ~/ojisoft-idp-deploy_dir
+          mkdir ~/ojisoft-idp-deploy_dir
+
       - name: Copy Files to Azure VM
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -54,7 +59,8 @@ jobs:
           key: ${{ secrets.AZURE_VM_SSH_KEY }}
           port: 22
           source: "./Source/OjiSoft-IdentityProvider/publish/*"
-          target: "~/deploy_dir"
+          target: "~/ojisoft-idp-deploy_dir"
+          strip_components: 3
 
       - name: Deploy on Azure VM
         uses: appleboy/ssh-action@v1.0.3
@@ -64,6 +70,7 @@ jobs:
           key: ${{ secrets.AZURE_VM_SSH_KEY }}
           port: 22
           script: |
-            cd /var/www/ojisoft/idp
+            sudo rm -rf /var/www/ojisoft/idp
+            sudo mv ~/ojisoft-idp-deploy_dir /var/www/ojisoft/idp
             sudo systemctl restart ojisoft-identity-provider.service
       

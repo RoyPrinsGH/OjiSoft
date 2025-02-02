@@ -55,6 +55,7 @@ jobs:
           port: 22
           source: "./Source/OjiSoft-IdentityProvider/publish/*"
           target: "/var/www/ojisoft/idp"
+          strip_components: 2
 
       - name: Deploy on Azure VM
         uses: appleboy/ssh-action@v1.0.3

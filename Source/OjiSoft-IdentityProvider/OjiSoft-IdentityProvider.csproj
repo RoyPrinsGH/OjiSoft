@@ -25,6 +25,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.5" />
 	<PackageReference Include="OpenIddict.AspNetCore" Version="5.7.0" />
 	<PackageReference Include="OpenIddict.EntityFrameworkCore" Version="5.7.0" />
+	<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
   </ItemGroup>
 
   <ItemGroup>

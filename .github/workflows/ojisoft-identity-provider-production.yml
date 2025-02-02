@@ -22,7 +22,9 @@ jobs:
         run: cd Source/OjiSoft-IdentityProvider
 
       - name: Restore Dependencies
-        run: dotnet restore
+        run: |
+          ls
+          dotnet restore
 
       - name: Build
         run: dotnet build --configuration Release --no-restore

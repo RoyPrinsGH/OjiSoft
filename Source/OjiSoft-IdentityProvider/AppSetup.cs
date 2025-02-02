@@ -90,7 +90,19 @@ namespace OjiSoftPortal
             services.AddDbContext<OjiSoftDataContext>(
                 options =>
                 {
-                    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+                    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+                    if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
+                    {
+                        Console.WriteLine("Production environment, using MySQL database");
+                        options.UseMySql(connectionString, ServerVersion.Create(Version.Parse("8.0.41"), Pomelo.EntityFrameworkCore.MySql.Infrastructure.ServerType.MySql));
+                    }
+                    else 
+                    {
+                        Console.WriteLine("Using SQL Server database");
+                        options.UseSqlServer(connectionString);
+                    }
+
                     options.UseOpenIddict();
                 }
             );

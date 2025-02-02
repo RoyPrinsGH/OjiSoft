@@ -18,6 +18,13 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
+      - name: Setup Tailwind-CLI
+        working-directory: ./Source/OjiSoft-IdentityProvider
+        run: |
+          curl -sLO https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-linux-x64
+          chmod +x tailwindcss-linux-x64
+          mv tailwindcss-linux-x64 tailwind
+
       - name: Restore Dependencies
         working-directory: ./Source/OjiSoft-IdentityProvider
         run: dotnet restore

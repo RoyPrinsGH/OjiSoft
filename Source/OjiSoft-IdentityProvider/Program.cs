@@ -1,5 +1,8 @@
 using OjiSoftPortal;
+using OjiSoftPortal.Data;
 using OjiSoftPortal.Services;
+
+using Microsoft.EntityFrameworkCore;
 
 var portal = AppSetup.InitializeOjiSoftPortal(args);
 
@@ -7,6 +10,11 @@ try
 {
     using (IServiceScope scope = portal.Services.CreateScope())
     {
+        var dbContext = scope.ServiceProvider.GetRequiredService<OjiSoftDataContext>();
+
+        dbContext.Database.EnsureCreated();
+        dbContext.Database.Migrate();
+
         DatabaseSeedingService dbSeedingService = scope.ServiceProvider.GetRequiredService<DatabaseSeedingService>();
 
         await dbSeedingService.EnsureRolesInDatabase();

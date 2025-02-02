@@ -5,7 +5,7 @@ namespace OjiSoft.LocalDevelopmentToolKit.ProjectDefinitions;
 /// <summary>
 /// This class holds the build logic for the Account Portal UI project.
 /// </summary>
-public sealed class OjiSoftAccountPortalUI : IProject
+public sealed class OjiSoftAccountPortalUI : IProject, IBuildableProject
 {
     public string ProjectName { get; } = "OjiSoft Account Portal UI";
 

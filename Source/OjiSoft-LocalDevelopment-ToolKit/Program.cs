@@ -51,7 +51,7 @@ public static class Program
                     BuildForProduction();
                     break;
                 case "Deploy":
-                    // Placeholder for deploy logic.
+                    DeployToProduction();
                     break;
                 case "Exit":
                     AnsiConsole.MarkupLine("[yellow]Exiting...[/]");
@@ -66,20 +66,31 @@ public static class Program
 
     private static bool BuildForProduction()
     {
-        // Get projects via Reflection
         var projectTypes = Assembly.GetExecutingAssembly().GetTypes()
-            .Where(t => t.GetInterfaces().Contains(typeof(IProject)))
+            .Where(t => t.GetInterfaces().Contains(typeof(IBuildableProject)))
             .ToList();
 
-        var projects = projectTypes.Select(t => (IProject)Activator.CreateInstance(t)!).ToList();
+        if (projectTypes.Count == 0)
+        {
+            AnsiConsole.MarkupLine("[red]Error:[/] No buildable projects found.");
+            return false;
+        }
 
-        // Select project to build.
-        var projectsToBuild = new MultiSelectionPrompt<IProject>()
+        var projects = projectTypes.Select(t => (IBuildableProject)Activator.CreateInstance(t)!).ToList();
+
+        var projectsToBuild = new MultiSelectionPrompt<IBuildableProject>()
             .Title("Select project(s) to build")
             .AddChoices(projects)
-            .UseConverter(p => p.ProjectName);
+            .UseConverter(p => p.ProjectName)
+            .NotRequired();
 
         var selectedProjects = AnsiConsole.Prompt(projectsToBuild);
+
+        if (selectedProjects.Count == 0)
+        {
+            AnsiConsole.MarkupLine("[red]Error:[/] No projects selected.");
+            return false;
+        }
 
         bool buildSuccess = false;
 
@@ -105,6 +116,60 @@ public static class Program
         }
 
         AnsiConsole.MarkupLine("[green]Build complete![/]");
+        return true;
+    }
+
+    private static bool DeployToProduction()
+    {
+        var projectTypes = Assembly.GetExecutingAssembly().GetTypes()
+            .Where(t => t.GetInterfaces().Contains(typeof(IDeployableProject)))
+            .ToList();
+
+        if (projectTypes.Count == 0)
+        {
+            AnsiConsole.MarkupLine("[red]Error:[/] No deployable projects found.");
+            return false;
+        }
+
+        var projects = projectTypes.Select(t => (IDeployableProject)Activator.CreateInstance(t)!).ToList();
+
+        var projectsToDeploy = new MultiSelectionPrompt<IDeployableProject>()
+            .Title("Select project(s) to deploy, the selected projects will go through the build & test process on the runner before being deployed to the production server.")
+            .AddChoices(projects)
+            .UseConverter(p => p.ProjectName);
+
+        var selectedProjects = AnsiConsole.Prompt(projectsToDeploy);
+
+        if (selectedProjects.Count == 0)
+        {
+            AnsiConsole.MarkupLine("[red]Error:[/] No projects selected.");
+            return false;
+        }
+
+        bool deploySuccess = false;
+
+        AnsiConsole.Status()
+            .Start("Starting...", ctx => 
+            {
+                ctx.Spinner(Spinner.Known.Dots);
+                ctx.SpinnerStyle(Style.Parse("green"));
+                foreach (var project in selectedProjects)
+                {
+                    deploySuccess = project.Deploy(ctx);
+                    if (!deploySuccess)
+                    {
+                        AnsiConsole.MarkupLine($"[red]Error:[/] Deployment failed for {project}.");
+                        return;
+                    }
+                }
+            });
+
+        if (!deploySuccess)
+        {
+            return false;
+        }
+
+        AnsiConsole.MarkupLine("[green]Deployment complete![/]");
         return true;
     }
 }

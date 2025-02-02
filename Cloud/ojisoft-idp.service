@@ -1,0 +1,15 @@
+[Unit]
+Description-OjiSoft Identity Provider
+After=network.target nginx.service
+Requires=nginx.service
+
+[Service]
+WorkingDirectory=/var/www/ojisoft/idp
+ExecStart=/usr/bin/dotnet /var/www/ojisoft/idp/OjiSoft-IdentityProvider.dll
+Restart=always
+RestartSec=10
+SyslogIdentifier=ojisoft-idp
+Environment=ASPNETCORE_ENVIRONMENT=Production
+
+[Install]
+WantedBy=multi-user.target

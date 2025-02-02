@@ -1,0 +1,53 @@
+name: ojisoft-identity-provider-production
+
+on:
+  push:
+    branches:
+    - ojisoft-identity-provider-production
+
+jobs:
+  build-test-deploy:
+    name: Build, Test & Deploy
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4.2.2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4.3.0
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore Dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test --no-build
+
+      - name: Publish
+        run: dotnet publish --configuration Release --no-build --output ./publish
+
+      - name: Copy Files to Azure VM
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.AZURE_VM_HOST }}
+          username: ${{ secrets.AZURE_VM_USERNAME }}
+          key: ${{ secrets.AZURE_VM_SSH_KEY }}
+          port: 22
+          source: "./publish/*"
+          target: "/var/www/ojisoft/idp"
+
+      - name: Deploy on Azure VM
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.AZURE_VM_HOST }}
+          username: ${{ secrets.AZURE_VM_USERNAME }}
+          key: ${{ secrets.AZURE_VM_SSH_KEY }}
+          port: 22
+          script: |
+            cd /var/www/ojisoft/idp
+            sudo systemctl restart ojisoft-identity-provider.service
+      

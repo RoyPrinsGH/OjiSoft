@@ -18,24 +18,20 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: CD Into the Source folder
-        run: |
-          ls
-          cd Source/OjiSoft-IdentityProvider
-          ls
-
       - name: Restore Dependencies
-        run: |
-          ls
-          dotnet restore
+        working-directory: ./Source/OjiSoft-IdentityProvider
+        run: dotnet restore
 
       - name: Build
+        working-directory: ./Source/OjiSoft-IdentityProvider
         run: dotnet build --configuration Release --no-restore
 
       - name: Test
+        working-directory: ./Source/OjiSoft-IdentityProvider
         run: dotnet test --no-build
 
       - name: Publish
+        working-directory: ./Source/OjiSoft-IdentityProvider
         run: dotnet publish --configuration Release --no-build --output ./publish
 
       - name: Copy Files to Azure VM
@@ -45,7 +41,7 @@ jobs:
           username: ${{ secrets.AZURE_VM_USERNAME }}
           key: ${{ secrets.AZURE_VM_SSH_KEY }}
           port: 22
-          source: "./publish/*"
+          source: "./Source/OjiSoft-IdentityProvider/publish/*"
           target: "/var/www/ojisoft/idp"
 
       - name: Deploy on Azure VM

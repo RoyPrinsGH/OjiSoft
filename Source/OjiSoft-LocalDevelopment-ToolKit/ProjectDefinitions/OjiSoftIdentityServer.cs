@@ -59,7 +59,7 @@ public sealed class OjiSoftIdentityServer : IProject, IBuildableProject, IDeploy
         string deployingSystemInfo = Environment.MachineName + " - " + Environment.OSVersion.VersionString;
         string mergeCommitMessage = "Deployment from Dev ToolKit - " + deployingSystemInfo;
 
-        var process = System.Diagnostics.Process.Start("CMD.exe", "/C start /WAIT cmd /C \"git checkout " + ProductionBranchName + " && git pull origin " + ProductionBranchName + " && git merge -m " + mergeCommitMessage + " master && git push origin " + ProductionBranchName + " && exit\"");
+        var process = System.Diagnostics.Process.Start("CMD.exe", "/C start /WAIT cmd /C \"git checkout " + ProductionBranchName + " && git pull origin " + ProductionBranchName + " && git merge -m \"" + mergeCommitMessage + "\" master && git push origin " + ProductionBranchName + " && exit\"");
         process.WaitForExit();
         if (process.ExitCode != 0)
         {

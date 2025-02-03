@@ -2,13 +2,11 @@ namespace OjiSoft.IdentityProvider.Logging;
 
 public static class GlobalFileLogData
 {
-    public static string LogDirectory { get; } = "logs/" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
+    public static string LogDirectory { get; } = "logs/oji-idp-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
 }
 
 public class FileLogger : ILogger
 {
-    public DateTime InitializationTime { get; } = DateTime.Now;
-
     private string _logName;
 
     private StreamWriter? _writer;
@@ -17,7 +15,7 @@ public class FileLogger : ILogger
     {
         Directory.CreateDirectory("logs");
         Directory.CreateDirectory(GlobalFileLogData.LogDirectory);
-        _logName = categoryName.Replace('.', '-') + "-" + InitializationTime.ToString("yyyy-MM-dd-HH-mm-ss") + ".log";
+        _logName = categoryName.Replace('.', '-') + ".log";
     }
 
     public void Dispose()

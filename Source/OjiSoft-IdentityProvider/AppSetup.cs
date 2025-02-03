@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Build.Logging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Console;
 using Microsoft.Extensions.Options;
 using OjiSoftPortal.Configuration;
 using OjiSoftPortal.Data;
 using OjiSoftPortal.Data.Models;
+using OjiSoftPortal.Logging;
 using OjiSoftPortal.Services;
 using OpenIddict.Abstractions;
 
@@ -74,16 +76,19 @@ namespace OjiSoftPortal
                         options.LoginPath = "/user/login";
                         options.LogoutPath = "/user/logout";
                         options.AccessDeniedPath = "/user/accessdenied";
+                        if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
+                        {
+                            options.Cookie.Domain = "ojisoft.com";
+                        }
+                        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                        options.Cookie.HttpOnly = true;
                     });
 
             services.AddLogging(
                 options =>
                 {
                     options.ClearProviders();
-                    options.AddConsole();
-                    // use trace level for logging during development
-                    options.SetMinimumLevel(LogLevel.Trace);
-                    options.AddFilter<ConsoleLoggerProvider>("Microsoft", LogLevel.Warning);
+                    options.AddProvider(new FileLoggingProvider());
                 }
             );
 

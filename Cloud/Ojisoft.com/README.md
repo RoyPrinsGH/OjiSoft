@@ -1,8 +1,19 @@
 Configuring the VM:
-- Install dotnet
-- Install nginx and enable
+
+--- Azure ---
+- Point DNS to the VM and add HTTP/HTTPS to inbound rules
+
+--- Proxy ---
+- Install nginx (do not run)
+- Install certbot & certificates (sudo certbot certonly --manual --preferred-challenges dns -d ojisoft.com -d *.ojisoft.com)
+- Add ojisoft-idp.conf to the nginx configs
+- Start nginx
+
+--- Database ---
 - Install mysql and enable
 - Copy the production appsettings onto the VM (~/config/idp/appsettings.json)
-- Set up mysql according to the appsettings
-- Add ojisoftcom-vm.config to the NGINX configs
-- Add ojisoft-idp.service and enable
+- Ensure the account from the production appsettings exists in mysql
+
+--- App ---
+- Install dotnet
+- Add ojisoft-identity-provider.service and enable

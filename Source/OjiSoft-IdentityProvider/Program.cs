@@ -1,20 +1,21 @@
-using OjiSoftPortal;
-using OjiSoftPortal.Data;
-using OjiSoftPortal.Services;
-
+using OjiSoft.IdentityProvider;
+using OjiSoft.IdentityProvider.Data;
+using OjiSoft.IdentityProvider.Services;
 using Microsoft.EntityFrameworkCore;
 
-var portal = AppSetup.InitializeOjiSoftPortal(args);
+var identityProvider = AppSetup.InitializeOjiSoftIdentityProvider(args);
 
 try
 {
-    using (IServiceScope scope = portal.Services.CreateScope())
+    using (IServiceScope scope = identityProvider.Services.CreateScope())
     {
         var dbContext = scope.ServiceProvider.GetRequiredService<OjiSoftDataContext>();
 
+        identityProvider.Logger.LogInformation("Ensuring database is created and migrated");
         dbContext.Database.EnsureCreated();
         dbContext.Database.Migrate();
 
+        identityProvider.Logger.LogInformation("Seeding database with roles, system user and pre-registered applications");
         DatabaseSeedingService dbSeedingService = scope.ServiceProvider.GetRequiredService<DatabaseSeedingService>();
 
         await dbSeedingService.EnsureRolesInDatabase();
@@ -22,13 +23,12 @@ try
         await dbSeedingService.EnsurePreRegisteredApplications();
     }
 
-    portal.Logger.LogInformation("Startup complete");
-
-    portal.Run();
+    identityProvider.Logger.LogInformation("Startup complete");
+    identityProvider.Run();
 }
 catch (Exception ex)
 {
-    portal.Logger.LogCritical(ex, "Unhandled exception occurred! Closing app.");
-    await portal.StopAsync();
+    identityProvider.Logger.LogCritical(ex, "Unhandled exception occurred! Closing app.");
+    await identityProvider.StopAsync();
     return;
 }

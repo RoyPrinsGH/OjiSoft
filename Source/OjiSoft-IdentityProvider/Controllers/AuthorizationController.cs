@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using OjiSoftPortal.Data.Models;
+using OjiSoft.IdentityProvider.Data.Models;
 using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
 
-namespace OjiSoftPortal.Controllers;
+namespace OjiSoft.IdentityProvider.Controllers;
 
 public class AuthorizationController(UserManager<OjiUser> userManager) : Controller
 {

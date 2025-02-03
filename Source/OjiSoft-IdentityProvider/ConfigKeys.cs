@@ -1,4 +1,4 @@
-﻿namespace OjiSoftPortal
+﻿namespace OjiSoft.IdentityProvider
 {
     public static class ConfigKeys
     {

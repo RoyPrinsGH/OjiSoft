@@ -1,11 +1,11 @@
-namespace OjiSoftPortal.Logging;
+namespace OjiSoft.IdentityProvider.Logging;
 
 public static class GlobalFileLogData
 {
     public static string LogDirectory { get; } = "logs/" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
 }
 
-public class FileLogging : ILogger
+public class FileLogger : ILogger
 {
     public DateTime InitializationTime { get; } = DateTime.Now;
 
@@ -13,7 +13,7 @@ public class FileLogging : ILogger
 
     private StreamWriter? _writer;
 
-    public FileLogging(string categoryName)
+    public FileLogger(string categoryName)
     {
         Directory.CreateDirectory("logs");
         Directory.CreateDirectory(GlobalFileLogData.LogDirectory);
@@ -44,12 +44,12 @@ public class FileLogging : ILogger
 
     public bool IsEnabled(LogLevel logLevel) => true;
 
-    public IDisposable? BeginScope<TState>(TState state) where TState : notnull => throw new NotImplementedException();
+    public IDisposable? BeginScope<TState>(TState state) where TState : notnull => default!;
 }
 
 public class FileLoggingProvider : ILoggerProvider
 {
-    public ILogger CreateLogger(string categoryName) => new FileLogging(categoryName);
+    public ILogger CreateLogger(string categoryName) => new FileLogger(categoryName);
 
     public void Dispose() {
         Console.WriteLine("Disposing FileLoggingProvider");

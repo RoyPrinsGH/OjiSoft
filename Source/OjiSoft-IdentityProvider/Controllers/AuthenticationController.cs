@@ -3,12 +3,11 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using OjiSoftPortal.Data.Models;
-using OjiSoftPortal.Models;
+using OjiSoft.IdentityProvider.Data.Models;
+using OjiSoft.IdentityProvider.Models;
 using OpenIddict.Abstractions;
-using OpenIddict.Server.AspNetCore;
 
-namespace OjiSoftPortal.Controllers;
+namespace OjiSoft.IdentityProvider.Controllers;
 
 [Route("user")]
 public class AuthenticationController(SignInManager<OjiUser> signInManager) : Controller

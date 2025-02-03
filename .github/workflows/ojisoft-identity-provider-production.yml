@@ -61,7 +61,7 @@ jobs:
           source: "./Source/OjiSoft-IdentityProvider/publish/*"
           target: "~/ojisoft-idp-deploy_dir"
           strip_components: 3
-
+          
       - name: Deploy on Azure VM
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -72,5 +72,6 @@ jobs:
           script: |
             sudo rm -rf /var/www/ojisoft/idp
             sudo mv ~/ojisoft-idp-deploy_dir /var/www/ojisoft/idp
+            sudo cp ~/config/idp/appsettings.json /var/www/ojisoft/idp/appsettings.json
             sudo systemctl restart ojisoft-identity-provider.service
       

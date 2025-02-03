@@ -53,13 +53,6 @@ public sealed class OjiSoftIdentityServer : IProject, IBuildableProject, IDeploy
 
     public bool Deploy(StatusContext? ctx = null)
     {
-        var doDeployment = AnsiConsole.Confirm("Are you sure you want to deploy the OjiSoft Identity Server to production?", false);
-        if (doDeployment == false)
-        {
-            AnsiConsole.MarkupLine("[yellow]Deployment cancelled.[/]");
-            return false;
-        }
-
         AnsiConsole.MarkupLine($"{ProjectName} - [yellow]Deploying to production...[/]");
         ctx?.Status("Deploying to production...");
 

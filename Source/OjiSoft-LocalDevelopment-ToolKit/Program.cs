@@ -146,6 +146,13 @@ public static class Program
             return false;
         }
 
+        var doDeployment = AnsiConsole.Confirm($"Are you sure you want to deploy {string.Join(',', selectedProjects.Select(p => p.ProjectName))} to production?", false);
+        if (doDeployment == false)
+        {
+            AnsiConsole.MarkupLine("[yellow]Deployment cancelled.[/]");
+            return false;
+        }
+
         bool deploySuccess = false;
 
         AnsiConsole.Status()

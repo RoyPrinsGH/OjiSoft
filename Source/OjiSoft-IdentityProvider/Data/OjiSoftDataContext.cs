@@ -14,30 +14,13 @@ namespace OjiSoftPortal.Data
             base.OnConfiguring(optionsBuilder);
         }
 
-        protected override void OnModelCreating(ModelBuilder builder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(builder);
+            base.OnModelCreating(modelBuilder);
 
-            builder.Entity<IdentityRole>(entity => entity.Property(m => m.Id).HasMaxLength(127));
-            builder.Entity<IdentityRole>(entity => entity.Property(m => m.ConcurrencyStamp).HasColumnType("varchar(256)"));
-
-            builder.Entity<IdentityUserLogin<string>>(entity =>
+            modelBuilder.Entity<IdentityRole>(entity =>
             {
-                entity.Property(m => m.LoginProvider).HasMaxLength(127);
-                entity.Property(m => m.ProviderKey).HasMaxLength(127);
-            });
-
-            builder.Entity<IdentityUserRole<string>>(entity =>
-            {
-                entity.Property(m => m.UserId).HasMaxLength(127);
-                entity.Property(m => m.RoleId).HasMaxLength(127);
-            });
-
-            builder.Entity<IdentityUserToken<string>>(entity =>
-            {
-                entity.Property(m => m.UserId).HasMaxLength(127);
-                entity.Property(m => m.LoginProvider).HasMaxLength(127);
-                entity.Property(m => m.Name).HasMaxLength(127);
+                entity.Property(e => e.ConcurrencyStamp).HasColumnType("nvarchar(256)");
             });
         }
     }

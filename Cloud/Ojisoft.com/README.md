@@ -1,6 +1,8 @@
 Configuring the VM:
-- Install dotnet sdk
-- Install nginx and enable the service
-- Copy the nginx config from OjiSoft/Cloud/Ojisoft.com/ojisoftcom-vm.config onto the VM
-- Copy the service for the identity provider from OjiSoft/Cloud/Ojisoft.com/ojisoft-idp.service onto the VM and enable
-- Copy the production appsettings onto the VM
+- Install dotnet
+- Install nginx and enable
+- Install mysql and enable
+- Copy the production appsettings onto the VM (~/config/idp/appsettings.json)
+- Set up mysql according to the appsettings
+- Add ojisoftcom-vm.config to the NGINX configs
+- Add ojisoft-idp.service and enable

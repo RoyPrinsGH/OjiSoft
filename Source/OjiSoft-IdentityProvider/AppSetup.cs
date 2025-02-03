@@ -180,6 +180,7 @@ namespace OjiSoftPortal
         public static void MapMinimalAPIEndPoints(WebApplication app)
         {
             app.Map("/error", () => Results.BadRequest("An error occurred."));
+            app.Map("/test", () => Results.Ok("Hey!"));
         }
     }
 }

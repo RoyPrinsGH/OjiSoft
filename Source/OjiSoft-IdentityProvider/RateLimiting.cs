@@ -9,7 +9,7 @@ public class RateLimiting
 
     public static void SetupRateLimiterServices(WebApplicationBuilder builder)
     {
-        ILogger logger = new FileLogger("Ojisoft.IdentityProvider.RateLimiting");
+        ILogger logger = new FileLogger("OjiSoft.IdentityProvider.RateLimiting");
 
         IConfigurationSection rateLimiters = builder.Configuration.GetSection("RateLimiters");
 

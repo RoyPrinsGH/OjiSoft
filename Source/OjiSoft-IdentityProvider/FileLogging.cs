@@ -18,7 +18,7 @@ public class FileLogger : ILogger
         _writer = null;
     }
 
-    public void EnsureLogWriter()
+    private void EnsureLogWriter()
     {
         if (_writer == null)
         {

@@ -87,6 +87,8 @@ public static class AppSetup
             options =>
             {
                 options.ClearProviders();
+                
+                GlobalLogSettings.SetLogDirectory((builder.Configuration.GetValue<string>("LogDirectory") ?? "logs") + "/oji-idp-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss"));
                 options.AddProvider(new FileLoggingProvider());
             }
         );

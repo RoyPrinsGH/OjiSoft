@@ -1,21 +1,14 @@
 namespace OjiSoft.IdentityProvider.Logging;
 
-public static class GlobalFileLogData
-{
-    public static string LogDirectory { get; } = "logs/oji-idp-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
-}
-
 public class FileLogger : ILogger
 {
-    private string _logName;
+    private string _logPath;
 
     private StreamWriter? _writer;
 
     public FileLogger(string categoryName)
     {
-        Directory.CreateDirectory("logs");
-        Directory.CreateDirectory(GlobalFileLogData.LogDirectory);
-        _logName = categoryName.Replace('.', '-') + ".log";
+        _logPath = GlobalLogSettings.LogDirectory + "/" + categoryName.Replace('.', '-') + ".log";
     }
 
     public void Dispose()
@@ -29,7 +22,7 @@ public class FileLogger : ILogger
     {
         if (_writer == null)
         {
-            _writer = new(GlobalFileLogData.LogDirectory + "/" + _logName, append: true);
+            _writer = new(_logPath, append: true);
             _writer.AutoFlush = true;
         }
     }
@@ -51,5 +44,16 @@ public class FileLoggingProvider : ILoggerProvider
 
     public void Dispose() {
         Console.WriteLine("Disposing FileLoggingProvider");
+    }
+}
+
+public static class GlobalLogSettings
+{
+    public static string LogDirectory { get; set; } = "logs";
+
+    public static void SetLogDirectory(string logDirectory)
+    {
+        LogDirectory = logDirectory;
+        Directory.CreateDirectory(LogDirectory);
     }
 }

@@ -10,16 +10,18 @@ using OpenIddict.Server.AspNetCore;
 
 namespace OjiSoft.IdentityProvider.Controllers;
 
-public class AuthorizationController(UserManager<OjiUser> userManager) : Controller
+public class AuthorizationController(UserManager<OjiUser> userManager, ILogger<AuthorizationController> logger) : Controller
 {
     private readonly UserManager<OjiUser> _userManager = userManager;
+
+    private readonly ILogger<AuthorizationController> _logger = logger;
 
     [HttpGet("~/connect/authorize")]
     [HttpPost("~/connect/authorize")]
     [IgnoreAntiforgeryToken]
     public async Task<IActionResult> Authorize()
     {
-        Console.WriteLine("Authorize called with query string: " + Request.QueryString.Value);
+        _logger.LogInformation("Authorize called with query string: {queryString}", Request.QueryString.Value);
         var request = HttpContext.GetOpenIddictServerRequest() ??
             throw new InvalidOperationException("The OpenID Connect request cannot be retrieved.");
 
@@ -29,7 +31,7 @@ public class AuthorizationController(UserManager<OjiUser> userManager) : Control
         // If the user principal can't be extracted, redirect the user to the login page.
         if (!result.Succeeded)
         {
-            Console.WriteLine("User not authenticated. Redirecting to login page.");
+            _logger.LogInformation("User not authenticated. Redirecting to login page.");
             return Challenge(
                 authenticationSchemes: CookieAuthenticationDefaults.AuthenticationScheme,
                 properties: new AuthenticationProperties
@@ -74,7 +76,7 @@ public class AuthorizationController(UserManager<OjiUser> userManager) : Control
     [HttpPost("~/connect/token"), Produces("application/json")]
     public async Task<IActionResult> Exchange()
     {
-        Console.WriteLine("Exchange called");
+        _logger.LogInformation("Exchange called");
         
         var request = HttpContext.GetOpenIddictServerRequest() ??
             throw new InvalidOperationException("The OpenID Connect request cannot be retrieved.");
@@ -102,7 +104,7 @@ public class AuthorizationController(UserManager<OjiUser> userManager) : Control
     [HttpGet("~/connect/logout")]
     public async Task<IActionResult> Logout()
     {
-        Console.WriteLine("Logout called");
+        _logger.LogInformation("Logout called");
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         return SignOut(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
     }

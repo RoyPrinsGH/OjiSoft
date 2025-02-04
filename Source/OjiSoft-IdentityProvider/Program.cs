@@ -3,6 +3,9 @@ using OjiSoft.IdentityProvider.Data;
 using OjiSoft.IdentityProvider.Services;
 using Microsoft.EntityFrameworkCore;
 
+Console.WriteLine("Starting OjiSoft Identity Provider...");
+Console.WriteLine("Time: " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+
 var identityProvider = AppSetup.InitializeOjiSoftIdentityProvider(args);
 
 try

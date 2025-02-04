@@ -10,14 +10,16 @@ using OpenIddict.Abstractions;
 namespace OjiSoft.IdentityProvider.Controllers;
 
 [Route("user")]
-public class AuthenticationController(SignInManager<OjiUser> signInManager) : Controller
+public class AuthenticationController(SignInManager<OjiUser> signInManager, ILogger<AuthenticationController> logger) : Controller
 {
     private readonly SignInManager<OjiUser> _signInManager = signInManager;
+
+    private readonly ILogger<AuthenticationController> _logger = logger;
 
     [HttpGet("login")]
     public IActionResult Login(string? returnUrl = null)
     {
-        Console.WriteLine("Login called with query string: " + Request.QueryString.Value);
+        _logger.LogInformation("Login called with query string: {queryString}", Request.QueryString.Value);
         ViewData["ReturnUrl"] = returnUrl;
         return View("Login");
     }
@@ -27,7 +29,7 @@ public class AuthenticationController(SignInManager<OjiUser> signInManager) : Co
     {
         ViewData["ReturnUrl"] = model.ReturnURL;
 
-        Console.WriteLine("Login called with username: " + model.Username + " and password: " + model.Password);
+        _logger.LogInformation("Login called with username: {username} and password: {password}", model.Username, model.Password);
         
         if (ModelState.IsValid) 
         {
@@ -52,7 +54,7 @@ public class AuthenticationController(SignInManager<OjiUser> signInManager) : Co
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
-            Console.WriteLine("User logged in. Redirecting to: " + model.ReturnURL);
+            _logger.LogInformation("User logged in. Redirecting to: {returnUrl}", model.ReturnURL);
             return Redirect(model.ReturnURL);
         }
 

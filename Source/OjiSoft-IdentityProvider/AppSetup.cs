@@ -68,26 +68,11 @@ public static class AppSetup
         services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.JwtSectionName));
         services.AddSingleton<IValidateOptions<JwtOptions>, JwtOptionsValidator>();
 
-        services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
-                {
-                    options.LoginPath = "/user/login";
-                    options.LogoutPath = "/user/logout";
-                    options.AccessDeniedPath = "/user/accessdenied";
-                    if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
-                    {
-                        Console.WriteLine("Production environment, setting cookie domain to ojisoft.com");
-                        options.Cookie.Domain = "ojisoft.com";
-                    }
-                    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                    options.Cookie.HttpOnly = true;
-                });
-
         services.AddLogging(
             options =>
             {
                 options.ClearProviders();
-                
+
                 GlobalLogSettings.SetLogDirectory((builder.Configuration.GetValue<string>("LogDirectory") ?? "logs") + "/oji-idp-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss"));
                 options.AddProvider(new FileLoggingProvider());
             }
@@ -122,6 +107,28 @@ public static class AppSetup
             })
             .AddEntityFrameworkStores<OjiSoftDataContext>()
             .AddDefaultTokenProviders();
+
+        services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+                {
+                    options.LoginPath = "/user/login";
+                    options.LogoutPath = "/connect/logout";
+                    options.AccessDeniedPath = "/user/accessdenied";
+                    if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
+                    {
+                        Console.WriteLine("Production environment, setting cookie domain to ojisoft.com");
+                        options.Cookie.Domain = "ojisoft.com";
+                    }
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                    options.Cookie.HttpOnly = true;
+                });
+
+        services.ConfigureApplicationCookie(options =>
+        {
+            options.LoginPath = "/user/login";
+            options.LogoutPath = "/connect/logout";
+            options.AccessDeniedPath = "/user/accessdenied";
+        });
 
         // This way we get the validator to fire too
         JwtOptions jwtOptions = services.BuildServiceProvider().GetRequiredService<IOptions<JwtOptions>>().Value;
@@ -175,8 +182,6 @@ public static class AppSetup
                 );
 
         services.AddControllersWithViews();
-
-        services.AddAuthorization();
 
         services.AddScoped<DatabaseSeedingService>();
     }

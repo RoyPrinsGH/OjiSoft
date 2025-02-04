@@ -49,7 +49,7 @@ public class FileLoggingProvider : ILoggerProvider
 
 public static class GlobalLogSettings
 {
-    public static string LogDirectory { get; set; } = "logs";
+    public static string LogDirectory { get; private set; } = "logs";
 
     public static void SetLogDirectory(string logDirectory)
     {
